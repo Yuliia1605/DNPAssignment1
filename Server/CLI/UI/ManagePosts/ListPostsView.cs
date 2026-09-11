@@ -1,6 +1,7 @@
+using Entities;
 using RepositoryContracts;
 
-namespace CLI.UI.ManagePost;
+namespace CLI.UI.ManagePosts;
 
 public class ListPostsView
 {
@@ -9,5 +10,15 @@ public class ListPostsView
     public ListPostsView(IPostRepository postRepository)
     {
         this.postRepository = postRepository;
+    }
+
+    public void Show()
+    {
+        IQueryable<Post> posts = postRepository.GetMany();
+
+        foreach (Post post in posts)
+        {
+            Console.WriteLine($"[{post.Title}, {post.Id}]");
+        }
     }
 }

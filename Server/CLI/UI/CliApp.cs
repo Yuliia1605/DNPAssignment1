@@ -1,4 +1,4 @@
-using CLI.UI.ManagePost;
+using CLI.UI.ManagePosts;
 using RepositoryContracts;
 using CLI.UI.ManageUsers;
 
@@ -22,12 +22,25 @@ public class CliApp
          this.commentRepository = commentRepository;
          
          manageUsersView = new ManageUsersView(userRepository);
-         managePostsView = new ManagePostsView(postRepository);
+         managePostsView = new ManagePostsView(postRepository, commentRepository);
     }
 
     public async Task StartAsync()
     {
+        Console.WriteLine("Main Menu");
+        Console.WriteLine("1. Manage users");
+        Console.WriteLine("2. Manage posts");
         
+        string? choice = Console.ReadLine();
+
+        if (choice == "1")
+        {
+            await manageUsersView.ShowAsync();
+        }
+        else if (choice == "2")
+        {
+            await managePostsView.ShowAsync();
+        }
     }
        
 }
