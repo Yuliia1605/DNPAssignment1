@@ -6,6 +6,30 @@ namespace InMemoryRepositories;
 public class UserInMemoryRepository : IUserRepository
 {
     private List<User> users = new();
+    
+    public UserInMemoryRepository()
+    {
+        users.Add(new User
+        {
+            Id = 1,
+            Username = "Anna",
+            Password = "1234"
+        });
+
+        users.Add(new User
+        {
+            Id = 2,
+            Username = "Piter",
+            Password = "5678"
+        });
+
+        users.Add(new User
+        {
+            Id = 3,
+            Username = "Din",
+            Password = "9876"
+        });
+    }
 
     public Task<User> AddAsync(User user)
     {

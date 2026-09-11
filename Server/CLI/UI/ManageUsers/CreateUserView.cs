@@ -17,6 +17,14 @@ public class CreateUserView
     {
         Console.WriteLine("Enter username:");
         string? username = Console.ReadLine();
+        foreach (User existingUser in userRepository.GetMany())
+        {
+            if (existingUser.Username == username)
+            {
+                Console.WriteLine("Username already exists.");
+                return;
+            }
+        }
         
         Console.WriteLine("Enter password:");
         string? password = Console.ReadLine();

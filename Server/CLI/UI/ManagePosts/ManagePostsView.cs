@@ -9,17 +9,23 @@ public class ManagePostsView
     private readonly ListPostsView listPostsView;
     private readonly SinglePostView singlePostView;
     private readonly CreateCommentView createCommentView;
+    private  readonly IUserRepository userRepository;
+    private readonly ICommentRepository commentRepository;
 
     public ManagePostsView(IPostRepository postRepository,
-        ICommentRepository commentRepository)
+        ICommentRepository commentRepository,
+        IUserRepository userRepository)
     {
         this.postRepository = postRepository;
+        this.commentRepository = commentRepository;
+        this.userRepository = userRepository;
 
-        createPostView = new CreatePostView(postRepository);
+        createPostView = new CreatePostView(postRepository, userRepository);
         listPostsView = new ListPostsView(postRepository);
         singlePostView = new SinglePostView(postRepository, 
             commentRepository);
-        createCommentView = new CreateCommentView(commentRepository);
+        createCommentView = new CreateCommentView(commentRepository,
+            userRepository, postRepository);
     }
     
     public async Task ShowAsync()

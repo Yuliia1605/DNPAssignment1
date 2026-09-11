@@ -22,25 +22,35 @@ public class CliApp
          this.commentRepository = commentRepository;
          
          manageUsersView = new ManageUsersView(userRepository);
-         managePostsView = new ManagePostsView(postRepository, commentRepository);
+         managePostsView = new ManagePostsView(postRepository, commentRepository,
+             userRepository);
     }
 
     public async Task StartAsync()
     {
-        Console.WriteLine("Main Menu");
-        Console.WriteLine("1. Manage users");
-        Console.WriteLine("2. Manage posts");
+        while (true)
+        {
+            Console.WriteLine("Main Menu");
+                    Console.WriteLine("1. Manage users");
+                    Console.WriteLine("2. Manage posts");
+                    Console.WriteLine("0. Exit");
+                    
+                    string? choice = Console.ReadLine();
+            
+                    if (choice == "1")
+                    {
+                        await manageUsersView.ShowAsync();
+                    }
+                    else if (choice == "2")
+                    {
+                        await managePostsView.ShowAsync();
+                    }
+                    else if (choice == "0")
+                    {
+                        return;
+                    }
+        }
         
-        string? choice = Console.ReadLine();
-
-        if (choice == "1")
-        {
-            await manageUsersView.ShowAsync();
-        }
-        else if (choice == "2")
-        {
-            await managePostsView.ShowAsync();
-        }
     }
        
 }

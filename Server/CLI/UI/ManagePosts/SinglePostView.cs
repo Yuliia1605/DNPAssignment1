@@ -20,9 +20,24 @@ public class SinglePostView
         Console.WriteLine("Enter post Id:");
         string? postIdInput = Console.ReadLine();
         
-        int postId = int.Parse(postIdInput);
+        int postId;
+        if (!int.TryParse(postIdInput, out postId))
+        {
+            Console.WriteLine("Invalid post id.");
+            return;
+        }
         
-        Post post = await postRepository.GetSingleAsync(postId);
+        Post post;
+        try
+        {
+            post = await postRepository.GetSingleAsync(postId);
+        }
+        catch (InvalidOperationException)
+        {
+            Console.WriteLine("Post does not exist.");
+            return;
+        }
+        
         Console.WriteLine($"Title: {post.Title}");
         Console.WriteLine($"Body: {post.Body}");
         
