@@ -9,19 +9,36 @@ public class CommentInMemoryRepository : ICommentRepository
 
     public Task<Comment> AddAsync(Comment comment)
     {
-        comment.Id = comments.Any()
-            ? comments.Max(c => c.Id) + 1
-            : 1;
+        int newId = 1;
 
+        foreach (Comment existingComment in comments)
+        {
+            if (existingComment.Id >= newId)
+            {
+                newId = existingComment.Id + 1;
+            }
+        }
+
+        comment.Id = newId;
         comments.Add(comment);
+
         return Task.FromResult(comment);
     }
 
     public Task UpdateAsync(Comment comment)
     {
-        Comment? existingComment = comments.SingleOrDefault(c => c.Id == comment.Id);
+        Comment? existingComment = null;
 
-        if (existingComment is null)
+        foreach (Comment existing in comments)
+        {
+            if (existing.Id == comment.Id)
+            {
+                existingComment = existing;
+                break;
+            }
+        }
+
+        if (existingComment == null)
         {
             throw new InvalidOperationException(
                 $"Comment with ID '{comment.Id}' not found");
@@ -35,9 +52,18 @@ public class CommentInMemoryRepository : ICommentRepository
 
     public Task DeleteAsync(int id)
     {
-        Comment? commentToRemove = comments.SingleOrDefault(c => c.Id == id);
+        Comment? commentToRemove = null;
 
-        if (commentToRemove is null)
+        foreach (Comment comment in comments)
+        {
+            if (comment.Id == id)
+            {
+                commentToRemove = comment;
+                break;
+            }
+        }
+
+        if (commentToRemove == null)
         {
             throw new InvalidOperationException(
                 $"Comment with ID '{id}' not found");
@@ -50,15 +76,24 @@ public class CommentInMemoryRepository : ICommentRepository
 
     public Task<Comment> GetSingleAsync(int id)
     {
-        Comment? comment = comments.SingleOrDefault(c => c.Id == id);
+        Comment? foundComment = null;
 
-        if (comment is null)
+        foreach (Comment comment in comments)
+        {
+            if (comment.Id == id)
+            {
+                foundComment = comment;
+                break;
+            }
+        }
+
+        if (foundComment == null)
         {
             throw new InvalidOperationException(
                 $"Comment with ID '{id}' not found");
         }
 
-        return Task.FromResult(comment);
+        return Task.FromResult(foundComment);
     }
 
     public IQueryable<Comment> GetMany()

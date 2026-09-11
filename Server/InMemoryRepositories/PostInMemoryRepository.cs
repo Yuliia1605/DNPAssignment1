@@ -6,20 +6,39 @@ namespace InMemoryRepositories;
 public class PostInMemoryRepository : IPostRepository
 {
     private List<Post> posts = new();
-    
+
     public Task<Post> AddAsync(Post post)
     {
-        post.Id = posts.Any()
-            ? posts.Max(p => p.Id) + 1
-            : 1;
+        int newId = 1;
+
+        foreach (Post existingPost in posts)
+        {
+            if (existingPost.Id >= newId)
+            {
+                newId = existingPost.Id + 1;
+            }
+        }
+
+        post.Id = newId;
         posts.Add(post);
+
         return Task.FromResult(post);
     }
-    
+
     public Task UpdateAsync(Post post)
     {
-        Post? existingPost = posts.SingleOrDefault(p => p.Id == post.Id);
-        if (existingPost is null)
+        Post? existingPost = null;
+
+        foreach (Post existing in posts)
+        {
+            if (existing.Id == post.Id)
+            {
+                existingPost = existing;
+                break;
+            }
+        }
+
+        if (existingPost == null)
         {
             throw new InvalidOperationException(
                 $"Post with ID '{post.Id}' not found");
@@ -30,32 +49,53 @@ public class PostInMemoryRepository : IPostRepository
 
         return Task.CompletedTask;
     }
-    
+
     public Task DeleteAsync(int id)
     {
-        Post? postToRemove = posts.SingleOrDefault(p => p.Id == id);
-        if (postToRemove is null)
+        Post? postToRemove = null;
+
+        foreach (Post post in posts)
+        {
+            if (post.Id == id)
+            {
+                postToRemove = post;
+                break;
+            }
+        }
+
+        if (postToRemove == null)
         {
             throw new InvalidOperationException(
                 $"Post with ID '{id}' not found");
         }
 
         posts.Remove(postToRemove);
+
         return Task.CompletedTask;
     }
-    
+
     public Task<Post> GetSingleAsync(int id)
     {
-        Post? post = posts.SingleOrDefault(p => p.Id == id);
-        if (post is null)
+        Post? foundPost = null;
+
+        foreach (Post post in posts)
+        {
+            if (post.Id == id)
+            {
+                foundPost = post;
+                break;
+            }
+        }
+
+        if (foundPost == null)
         {
             throw new InvalidOperationException(
                 $"Post with ID '{id}' not found");
         }
 
-        return Task.FromResult(post);
+        return Task.FromResult(foundPost);
     }
-    
+
     public IQueryable<Post> GetMany()
     {
         return posts.AsQueryable();
