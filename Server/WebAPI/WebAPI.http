@@ -1,6 +1,19 @@
-@WebAPI_HostAddress = http://localhost:5051
+POST http://localhost:5051/Users
+Content-Type: application/json
 
-GET {{WebAPI_HostAddress}}/weatherforecast/
-Accept: application/json
+{
+  "userName": "Anna",
+  "password": "1234"
+}
 
 ###
+PUT http://localhost:5051/Users/2
+Content-Type: application/json
+
+{
+  "userName": "AnnaUpdated",
+  "password": "5678"
+}
+
+###
+DELETE http://localhost:5051/Users/2
