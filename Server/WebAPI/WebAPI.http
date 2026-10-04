@@ -17,3 +17,26 @@ Content-Type: application/json
 
 ###
 DELETE http://localhost:5051/Users/2
+
+###
+POST http://localhost:5051/Posts
+Content-Type: application/json
+
+{
+  "title": "Test post",
+  "body": "Hello Hello Hello",
+  "userId": 2
+}
+
+###
+PUT http://localhost:5051/Posts/2
+Content-Type: application/json
+
+{
+  "title": "Updated post",
+  "body": "Updated body",
+  "userId": 2
+}
+
+###
+DELETE http://localhost:5051/Posts/2
