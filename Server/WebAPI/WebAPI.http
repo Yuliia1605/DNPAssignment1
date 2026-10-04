@@ -40,3 +40,26 @@ Content-Type: application/json
 
 ###
 DELETE http://localhost:5051/Posts/2
+
+###
+POST http://localhost:5051/Comments
+Content-Type: application/json
+
+{
+  "body": "Nice post!",
+  "userId": 2,
+  "postId": 2
+}
+
+###
+PUT http://localhost:5051/Comments/2
+Content-Type: application/json
+
+{
+  "body": "Updated comment!",
+  "userId": 2,
+  "postId": 2
+}
+
+###
+DELETE http://localhost:5051/Comments/2
