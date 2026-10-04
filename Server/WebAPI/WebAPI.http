@@ -63,3 +63,53 @@ Content-Type: application/json
 
 ###
 DELETE http://localhost:5051/Comments/2
+
+###
+POST http://localhost:5051/Posts
+Content-Type: application/json
+
+{
+  "title": "Invalid post",
+  "body": "Test",
+  "userId": 999
+}
+
+###
+POST http://localhost:5051/Posts
+Content-Type: application/json
+
+{
+  "title": "Test post",
+  "body": "Hello Hello Hello",
+  "userId": 2
+}
+
+###
+POST http://localhost:5051/Comments
+Content-Type: application/json
+
+{
+  "body": "Invalid comment",
+  "userId": 999,
+  "postId": 2
+}
+
+###
+POST http://localhost:5051/Comments
+Content-Type: application/json
+
+{
+  "body": "Invalid comment",
+  "userId": 2,
+  "postId": 999
+}
+
+###
+POST http://localhost:5051/Comments
+Content-Type: application/json
+
+{
+  "body": "Nice post!",
+  "userId": 2,
+  "postId": 2
+}

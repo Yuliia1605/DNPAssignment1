@@ -10,16 +10,39 @@ namespace WebAPI.Controllers;
 public class CommentsController : ControllerBase
 {
     private readonly ICommentRepository commentRepo;
+    private readonly IUserRepository userRepo;
+    private readonly IPostRepository postRepo;
 
-    public CommentsController(ICommentRepository commentRepo)
+    public CommentsController(
+        ICommentRepository commentRepo,
+        IUserRepository userRepo,
+        IPostRepository postRepo)
     {
         this.commentRepo = commentRepo;
+        this.userRepo = userRepo;
+        this.postRepo = postRepo;
     }
     
     [HttpPost]
     public async Task<ActionResult<CommentDto>> AddComment(
         [FromBody] CreateCommentDto request)
     {
+        bool userExists = userRepo.GetMany()
+            .Any(user => user.Id == request.UserId);
+
+        if (!userExists)
+        {
+            return BadRequest("User does not exist.");
+        }
+
+        bool postExists = postRepo.GetMany()
+            .Any(post => post.Id == request.PostId);
+
+        if (!postExists)
+        {
+            return BadRequest("Post does not exist.");
+        }
+        
         Comment comment = new()
         {
             Body = request.Body,

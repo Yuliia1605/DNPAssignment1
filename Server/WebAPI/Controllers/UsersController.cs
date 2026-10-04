@@ -19,6 +19,16 @@ public class UsersController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<UserDto>> AddUser([FromBody] CreateUserDto request)
     {
+        bool usernameTaken = userRepo.GetMany()
+            .Any(user => user.Username.Equals(
+                request.UserName,
+                StringComparison.OrdinalIgnoreCase));
+
+        if (usernameTaken)
+        {
+            return BadRequest("Username is already taken.");
+        }
+        
         User user = new()
         {
             Username = request.UserName,

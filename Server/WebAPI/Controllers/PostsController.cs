@@ -10,15 +10,27 @@ namespace WebAPI.Controllers;
 public class PostsController : ControllerBase
 {
     private readonly IPostRepository postRepo;
+    private readonly IUserRepository userRepo;
 
-    public PostsController(IPostRepository postRepo)
+    public PostsController(
+        IPostRepository postRepo,
+        IUserRepository userRepo)
     {
         this.postRepo = postRepo;
+        this.userRepo = userRepo;
     }
     
     [HttpPost]
     public async Task<ActionResult<PostDto>> AddPost([FromBody] CreatePostDto request)
     {
+        bool userExists = userRepo.GetMany()
+            .Any(user => user.Id == request.UserId);
+
+        if (!userExists)
+        {
+            return BadRequest("User does not exist.");
+        }
+        
         Post post = new()
         {
             Title = request.Title,
