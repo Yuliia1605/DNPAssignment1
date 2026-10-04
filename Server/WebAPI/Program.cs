@@ -1,4 +1,11 @@
+using FileRepositories;
+using RepositoryContracts;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddScoped<IPostRepository, PostFileRepositories>();
+builder.Services.AddScoped<IUserRepository, UserFileRepository>();
+builder.Services.AddScoped<ICommentRepository, CommentFileRepository>();
 
 // Add services to the container.
 
