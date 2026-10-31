@@ -1,0 +1,53 @@
+@page "/register"
+@using ApiContracts
+@using BlazorApp.Services
+@inject IUserService UserService
+
+<h3>Register new user</h3>
+
+<div class="mb-3">
+    <label>Username</label>
+    <input class="form-control" @bind="username" />
+</div>
+
+<div class="mb-3">
+    <label>Password</label>
+    <input class="form-control" type="password" @bind="password" />
+</div>
+
+<button class="btn btn-primary" @onclick="RegisterUser">
+    Register
+</button>
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <p>@message</p>
+}
+
+@code {
+    private string username = "";
+    private string password = "";
+    private string message = "";
+
+    private async Task RegisterUser()
+    {
+        try
+        {
+            CreateUserDto request = new()
+            {
+                UserName = username,
+                Password = password
+            };
+
+            UserDto createdUser = await UserService.AddUserAsync(request);
+
+            message = $"User {createdUser.UserName} registered successfully!";
+            username = "";
+            password = "";
+        }
+        catch (Exception ex)
+        {
+            message = $"Error: {ex.Message}";
+        }
+    }
+}

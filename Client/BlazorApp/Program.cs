@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped(sp => new HttpClient
 {
-    BaseAddress = new Uri("https://localhost:7203")
+    BaseAddress = new Uri("http://localhost:5051")
 });
 
 builder.Services.AddScoped<IUserService, HttpUserService>();
