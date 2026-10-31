@@ -3,6 +3,7 @@
 @using BlazorApp.Services
 @inject IPostService PostService
 @inject ICommentService CommentService
+@inject IUserService UserService
 
 <h3>Post details</h3>
 
@@ -18,7 +19,7 @@ else
 {
     <h4>@post.Title</h4>
     <p>@post.Body</p>
-    <p>Author ID: @post.UserId</p>
+    <p>Author: @authorName</p>
 
     <hr />
 
@@ -66,12 +67,17 @@ else
     private string commentBody = "";
     private string message = "";
     private string errorMessage = "";
+    private string authorName = "";
 
     protected override async Task OnParametersSetAsync()
     {
         try
         {
             post = await PostService.GetPostAsync(Id);
+
+            UserDto author = await UserService.GetUserAsync(post.UserId);
+            authorName = author.UserName;
+
             comments = await CommentService.GetCommentsAsync(Id);
         }
         catch (Exception ex)

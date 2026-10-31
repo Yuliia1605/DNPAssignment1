@@ -42,4 +42,24 @@ public class HttpUserService : IUserService
             throw new Exception(response);
         }
     }
+    
+    public async Task<UserDto> GetUserAsync(int id)
+    {
+        HttpResponseMessage httpResponse =
+            await client.GetAsync($"users/{id}");
+
+        string response = await httpResponse.Content.ReadAsStringAsync();
+
+        if (!httpResponse.IsSuccessStatusCode)
+        {
+            throw new Exception(response);
+        }
+
+        return JsonSerializer.Deserialize<UserDto>(
+            response,
+            new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            })!;
+    }
 }
