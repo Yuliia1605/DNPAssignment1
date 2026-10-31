@@ -10,9 +10,8 @@ builder.Services.AddScoped(sp => new HttpClient
 });
 
 builder.Services.AddScoped<IUserService, HttpUserService>();
-
 builder.Services.AddScoped<IPostService, HttpPostService>();
-
+builder.Services.AddScoped<ICommentService, HttpCommentService>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
