@@ -2,37 +2,45 @@
 @using ApiContracts
 @using BlazorApp.Services
 @using Microsoft.AspNetCore.Components.Authorization
-@using Microsoft.AspNetCore.Authorization
 @inject IPostService PostService
 
 <h3>Create new post</h3>
 
-<div class="mb-3">
-    <label>Title</label>
-    <input class="form-control" @bind="title" />
-</div>
+<AuthorizeView>
+    <Authorized>
+        <div class="mb-3">
+            <label>Title</label>
+            <input class="form-control" @bind="title" />
+        </div>
 
-<div class="mb-3">
-    <label>Body</label>
-    <textarea class="form-control" @bind="body"></textarea>
-</div>
+        <div class="mb-3">
+            <label>Body</label>
+            <textarea class="form-control" @bind="body"></textarea>
+        </div>
 
-<button class="btn btn-primary" @onclick="CreateNewPost">
-    Create Post
-</button>
+        <button class="btn btn-primary" @onclick="CreateNewPost">
+            Create Post
+        </button>
 
-@if (!string.IsNullOrEmpty(message))
-{
-    <p>@message</p>
-}
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <p>@message</p>
+        }
+    </Authorized>
+
+    <NotAuthorized>
+        <p>You must log in to create a post.</p>
+        <a href="/login">Log in</a>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthState { get; set; } = default!;
+
     private string title = "";
     private string body = "";
     private string message = "";
-    
-    [CascadingParameter]
-    private Task<AuthenticationState> AuthState { get; set; } = default!;
 
     private async Task CreateNewPost()
     {
@@ -46,7 +54,7 @@
                 message = "You must log in to create a post.";
                 return;
             }
-            
+
             CreatePostDto request = new()
             {
                 Title = title,
