@@ -113,3 +113,21 @@ Content-Type: application/json
   "userId": 2,
   "postId": 2
 }
+
+###
+POST http://localhost:5051/auth/login
+Content-Type: application/json
+
+{
+  "userName": "Anna",
+  "password": "1234"
+}
+
+###
+POST http://localhost:5051/auth/login
+Content-Type: application/json
+
+{
+  "userName": "Anna",
+  "password": "wrongpassword"
+}
