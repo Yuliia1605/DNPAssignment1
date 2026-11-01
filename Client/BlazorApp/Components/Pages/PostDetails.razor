@@ -1,6 +1,7 @@
 @page "/posts/{Id:int}"
 @using ApiContracts
 @using BlazorApp.Services
+@using Microsoft.AspNetCore.Components.Authorization
 @inject IPostService PostService
 @inject ICommentService CommentService
 @inject IUserService UserService
@@ -68,6 +69,9 @@ else
     private string message = "";
     private string errorMessage = "";
     private string authorName = "";
+    
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthState { get; set; } = default!;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -90,10 +94,19 @@ else
     {
         try
         {
+            AuthenticationState authState = await AuthState;
+            string? id = authState.User.FindFirst("Id")?.Value;
+
+            if (!int.TryParse(id, out int userId))
+            {
+                message = "You must log in to add a comment.";
+                return;
+            }
+            
             CreateCommentDto request = new()
             {
                 Body = commentBody,
-                UserId = 2,
+                UserId = userId,
                 PostId = Id
             };
 

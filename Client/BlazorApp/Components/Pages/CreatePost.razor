@@ -1,6 +1,8 @@
 @page "/create-post"
 @using ApiContracts
 @using BlazorApp.Services
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Authorization
 @inject IPostService PostService
 
 <h3>Create new post</h3>
@@ -28,16 +30,28 @@
     private string title = "";
     private string body = "";
     private string message = "";
+    
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthState { get; set; } = default!;
 
     private async Task CreateNewPost()
     {
         try
         {
+            AuthenticationState authState = await AuthState;
+            string? id = authState.User.FindFirst("Id")?.Value;
+
+            if (!int.TryParse(id, out int userId))
+            {
+                message = "You must log in to create a post.";
+                return;
+            }
+            
             CreatePostDto request = new()
             {
                 Title = title,
                 Body = body,
-                UserId = 2
+                UserId = userId
             };
 
             PostDto createdPost = await PostService.AddPostAsync(request);
