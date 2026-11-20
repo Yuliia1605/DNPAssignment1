@@ -1,3 +1,4 @@
+
 using ApiContracts;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -20,14 +21,14 @@ public class UsersController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<UserDto>> AddUser([FromBody] CreateUserDto request)
     {
-        bool usernameTaken = userRepo.GetMany()
-            .Any(user => user.Username.ToLower() == request.UserName.ToLower());
+        bool usernameTaken = await userRepo.GetMany()
+            .AnyAsync(user => user.Username.ToLower() == request.UserName.ToLower());
 
         if (usernameTaken)
         {
             return BadRequest("Username is already taken.");
         }
-        
+
         User user = new()
         {
             Username = request.UserName,
@@ -44,7 +45,7 @@ public class UsersController : ControllerBase
 
         return Created($"/Users/{dto.Id}", dto);
     }
-    
+
     [HttpGet("{id:int}")]
     public async Task<ActionResult<UserDto>> GetSingle([FromRoute] int id)
     {
@@ -58,7 +59,7 @@ public class UsersController : ControllerBase
 
         return Ok(dto);
     }
-    
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetMany([FromQuery] string? username)
     {
@@ -78,7 +79,7 @@ public class UsersController : ControllerBase
 
         return Ok(dtos);
     }
-    
+
     [HttpPut("{id:int}")]
     public async Task<ActionResult> UpdateUser(
         [FromRoute] int id,
@@ -93,7 +94,7 @@ public class UsersController : ControllerBase
 
         return NoContent();
     }
-    
+
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> DeleteUser([FromRoute] int id)
     {

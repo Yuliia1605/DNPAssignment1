@@ -1,3 +1,4 @@
+
 using ApiContracts;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -20,18 +21,18 @@ public class PostsController : ControllerBase
         this.postRepo = postRepo;
         this.userRepo = userRepo;
     }
-    
+
     [HttpPost]
     public async Task<ActionResult<PostDto>> AddPost([FromBody] CreatePostDto request)
     {
-        bool userExists = userRepo.GetMany()
-            .Any(user => user.Id == request.UserId);
+        bool userExists = await userRepo.GetMany()
+            .AnyAsync(user => user.Id == request.UserId);
 
         if (!userExists)
         {
             return BadRequest("User does not exist.");
         }
-        
+
         Post post = new()
         {
             Title = request.Title,
@@ -51,7 +52,7 @@ public class PostsController : ControllerBase
 
         return Created($"/Posts/{dto.Id}", dto);
     }
-    
+
     [HttpGet("{id:int}")]
     public async Task<ActionResult<PostDto>> GetSingle([FromRoute] int id)
     {
@@ -67,7 +68,7 @@ public class PostsController : ControllerBase
 
         return Ok(dto);
     }
-    
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<PostDto>>> GetMany(
         [FromQuery] string? title,
@@ -96,7 +97,7 @@ public class PostsController : ControllerBase
 
         return Ok(dtos);
     }
-    
+
     [HttpPut("{id:int}")]
     public async Task<ActionResult> UpdatePost(
         [FromRoute] int id,
@@ -112,7 +113,7 @@ public class PostsController : ControllerBase
 
         return NoContent();
     }
-    
+
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> DeletePost([FromRoute] int id)
     {

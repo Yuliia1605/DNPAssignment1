@@ -27,16 +27,16 @@ public class CommentsController : ControllerBase
     public async Task<ActionResult<CommentDto>> AddComment(
         [FromBody] CreateCommentDto request)
     {
-        bool userExists = userRepo.GetMany()
-            .Any(user => user.Id == request.UserId);
+        bool userExists = await userRepo.GetMany()
+            .AnyAsync(user => user.Id == request.UserId);
 
         if (!userExists)
         {
             return BadRequest("User does not exist.");
         }
 
-        bool postExists = postRepo.GetMany()
-            .Any(post => post.Id == request.PostId);
+        bool postExists = await postRepo.GetMany()
+            .AnyAsync(post => post.Id == request.PostId);
 
         if (!postExists)
         {
@@ -66,17 +66,24 @@ public class CommentsController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<CommentDto>> GetSingle([FromRoute] int id)
     {
-        Comment comment = await commentRepo.GetSingleAsync(id);
-
-        CommentDto dto = new()
+        try
         {
-            Id = comment.Id,
-            Body = comment.Body,
-            UserId = comment.UserId,
-            PostId = comment.PostId
-        };
+            Comment comment = await commentRepo.GetSingleAsync(id);
 
-        return Ok(dto);
+            CommentDto dto = new()
+            {
+                Id = comment.Id,
+                Body = comment.Body,
+                UserId = comment.UserId,
+                PostId = comment.PostId
+            };
+
+            return Ok(dto);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
     }
     
     [HttpGet]
