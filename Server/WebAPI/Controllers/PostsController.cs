@@ -77,7 +77,7 @@ public class PostsController : ControllerBase
         if (!string.IsNullOrWhiteSpace(title))
         {
             posts = posts.Where(post =>
-                post.Title.Contains(title, StringComparison.OrdinalIgnoreCase));
+                post.Title.ToLower().Contains(title.ToLower()));
         }
 
         if (userId.HasValue)
