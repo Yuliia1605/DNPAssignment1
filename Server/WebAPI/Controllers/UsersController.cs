@@ -49,15 +49,22 @@ public class UsersController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<UserDto>> GetSingle([FromRoute] int id)
     {
-        User user = await userRepo.GetSingleAsync(id);
-
-        UserDto dto = new()
+        try
         {
-            Id = user.Id,
-            UserName = user.Username
-        };
+            User user = await userRepo.GetSingleAsync(id);
 
-        return Ok(dto);
+            UserDto dto = new()
+            {
+                Id = user.Id,
+                UserName = user.Username
+            };
+
+            return Ok(dto);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
     }
 
     [HttpGet]

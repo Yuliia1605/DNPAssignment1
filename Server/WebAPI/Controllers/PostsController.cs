@@ -56,17 +56,24 @@ public class PostsController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<PostDto>> GetSingle([FromRoute] int id)
     {
-        Post post = await postRepo.GetSingleAsync(id);
-
-        PostDto dto = new()
+        try
         {
-            Id = post.Id,
-            Title = post.Title,
-            Body = post.Body,
-            UserId = post.UserId
-        };
+            Post post = await postRepo.GetSingleAsync(id);
 
-        return Ok(dto);
+            PostDto dto = new()
+            {
+                Id = post.Id,
+                Title = post.Title,
+                Body = post.Body,
+                UserId = post.UserId
+            };
+
+            return Ok(dto);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
     }
 
     [HttpGet]
