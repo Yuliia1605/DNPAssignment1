@@ -20,9 +20,7 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<UserDto>> AddUser([FromBody] CreateUserDto request)
     {
         bool usernameTaken = userRepo.GetMany()
-            .Any(user => user.Username.Equals(
-                request.UserName,
-                StringComparison.OrdinalIgnoreCase));
+            .Any(user => user.Username.ToLower() == request.UserName.ToLower());
 
         if (usernameTaken)
         {
@@ -68,7 +66,7 @@ public class UsersController : ControllerBase
         if (!string.IsNullOrWhiteSpace(username))
         {
             users = users.Where(user =>
-                user.Username.Contains(username, StringComparison.OrdinalIgnoreCase));
+                user.Username.ToLower().Contains(username.ToLower()));
         }
 
         IEnumerable<UserDto> dtos = users.Select(user => new UserDto

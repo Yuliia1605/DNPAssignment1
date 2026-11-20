@@ -1,21 +1,21 @@
-using FileRepositories;
+using EfcRepositories;
 using RepositoryContracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<IPostRepository, PostFileRepositories>();
-builder.Services.AddScoped<IUserRepository, UserFileRepository>();
-builder.Services.AddScoped<ICommentRepository, CommentFileRepository>();
+builder.Services.AddDbContext<EfcRepositories.AppContext>();
 
-// Add services to the container.
+builder.Services.AddScoped<IPostRepository, EfcPostRepository>();
+builder.Services.AddScoped<IUserRepository, EfcUserRepository>();
+builder.Services.AddScoped<ICommentRepository, EfcCommentRepository>();
+
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
